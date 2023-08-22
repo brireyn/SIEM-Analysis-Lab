@@ -40,7 +40,7 @@ Create a Firewall with rules (NIC Avanced)
 Create a new NSG (Network Security Group) that allows everything into the VM. (Remove the default rules first that are blocking traffic).
 ![allow_any_traffic](https://github.com/brireyn/brireyn/assets/96150916/b015da59-29da-4c0f-a00c-0ab27b32b657)
 
-This akes the VM very discoverable quickly, for ICMP pings and SIEM scans.
+This makes the VM very discoverable quickly, for ICMP pings and SIEM scans.
 
 <h3>Step 4</h3>
 Create a log analytics group in the Azure Log Analytics Workspaces. 
@@ -52,6 +52,8 @@ You must also enable Microsoft Defender for the use of Security Center to enable
 <h3>Step 5</h3>
 
 In Microsoft Defender for Cloud - enable ALL Events for all Windows security and Applocker events.
+![Turn_off_MSDefender](https://github.com/brireyn/brireyn/assets/96150916/051f63d7-b459-42cd-9b44-81349bc62d9b)
+
 ![step5](https://github.com/brireyn/brireyn/assets/96150916/4ecfebbb-3f51-40cc-b177-85063b05f5c1)
 
 <h3>Step 6</h3>
@@ -59,12 +61,37 @@ In Microsoft Defender for Cloud - enable ALL Events for all Windows security and
 
 ![step6](https://github.com/brireyn/brireyn/assets/96150916/c3f3213b-35ad-4589-86cc-a417ace693ca)
 
+![create_log_analytics_group](https://github.com/brireyn/brireyn/assets/96150916/cacc3c5d-e57a-40ad-8aff-8ab521b60622)
+
+
 ![Connect_to_vm](https://github.com/brireyn/brireyn/assets/96150916/f90df7c2-5bc1-446e-a871-c957a55db69c)
 
 <h3>Step 7</h3>
+Go to Sentinel (SIEM) used to visualize the attack data. Add Sentinal workspaces to the VM. (Associate the VM group to the SIEM workspaces).
+Get the public IP of the VM and go to Remote desktop connection from  your computer's Windows menu and choose- other accounts (use Azure credentials to login to the VM). 
+
+![public IP ](https://github.com/brireyn/brireyn/assets/96150916/96ab8e8e-f3e1-43c4-8899-7c37cbe31102)
+
+![rdp_login](https://github.com/brireyn/brireyn/assets/96150916/be073c2d-827e-4c2f-9ac1-8e0b756e7dc5)
+
+![rdp](https://github.com/brireyn/brireyn/assets/96150916/e4525980-6764-4168-a792-330931af5f86)
+(Will get a warning, still proceed to login)
+Go back to Remote Desktop Connection on your computer and create some failed log in attempts. Then log back into the VM correctly.
+
+<h3>Step 8</h3>
+After logging into the VM with the public ip , go to Event viewer in Windows and see the security logs of all the failed login attempts and the user names. 
+(A fake user log text file script was also added to help 'train' the data ingestion for the PowerShell script.)
+
+<h3>Step 9</h3>
+Turn off Windows Defender Firewall setting inside of the VM, this allows ping ICMP packets to be reachable to the VM from outbound traffic and to make it discoverable to attackers trying to log in. 
+
+![Turn_off_MSDefender](https://github.com/brireyn/brireyn/assets/96150916/fa732a07-2718-4bba-8bd9-e804067198e2)
 
 
+<h3>Step 10</h3>
 
+
+<h3>Step 11</h3>
 
 
 
