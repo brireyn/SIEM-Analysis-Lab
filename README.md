@@ -124,9 +124,8 @@ Add a text file of rdp_failed.logs to the Program data file which is hidden.
 
 An example of me failing a login attempt at the bottom of the running the PowerShell Script:
 
-![ex of me failing login](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/7c6f3627-cdb5-4968-a146-be2775f61ab7)
-![failed_login_attempt_8_21](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/22e71294-cf4d-4c6e-9d25-6829ef676a22)
 
+![fail_ex](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/c0a25dbe-1aec-4206-880e-a70b28e133dd)
 
 
 <h3>Step 13</h3>
@@ -139,16 +138,91 @@ Create the log analytics group:
 
 create a custom log table to direct the path to the Program Data folder inside of the VM where the failed_rdp.log text file is stored along with the PowerShell script that is running.
 ![create_custom_log_azure](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/f7b60679-2582-4306-b98a-5ec470624fe7)
+Create a custom log
+ log in tables- MMR - 
+Create a custom log in analytics inside of azure and copy the failed event log to notepad from vm to PC .. Import failed event log to azure custom log. 
+Copy the contents of failed_rdp log data.
 
 ![create_custom_log_2](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/dda67646-6bfd-40bf-b026-6feaa49ec60e)
+Record Delimiter:
+![custom_log_3](https://github.com/brireyn/brireyn/assets/96150916/c5c98340-6070-4629-be03-b5abfe3c5b82)
 
 ![create_customlog_3](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/1734d263-aee1-486b-8335-ce89581d169e)
 
 <h3>Step 14</h3>
+Run the custom query for the custom log named (FAILED_RDP_WITH_GEO_CL ) in Log Analytics - tables - failed_rdp.log
+Query the custom table which shows the failed_rdp.logs from the VM using: SecurityEvent | where EventID ==4625   
+4625 is the error number for failed login attempt from Windows Event Viewer.
 
+![run_query_on_logs](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/2a249f33-d898-4c52-8ea9-3ca6c830f80a)
+
+![ran_custom_query](https://github.com/brireyn/brireyn/assets/96150916/54a46254-ecea-4095-ab66-958aefab71a3)
+
+![Screenshot 2023-08-21 015101](https://github.com/brireyn/brireyn/assets/96150916/58a5e4c5-7320-4ec4-bbc7-e6a435c88fc4)
+
+![Step14](https://github.com/brireyn/brireyn/assets/96150916/deff20d6-37e5-4d05-a96c-c3e2a5a914b0)
+
+In the Alert log query result, the RAW data is showing the username, IP address, location information, workstation and timestamp for the failed login.
+
+![alert_log_query_result](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/d51364eb-fc13-4007-b83e-42be4cecbda1)
 
 <h3>Step 15</h3>
 
+Create a new workbook inside of Microsoft Sentinel for creating a query script to extract the Raw data (detailed info) from the FAILED_RDP_WITH_GEO_CL table and then Sentinel Workbook will plot the raw data into a visual map.
 
+![workbook_ploting_map_query](https://github.com/brireyn/brireyn/assets/96150916/20d55d5c-f279-4dff-9c5a-d42dc9c47a43)
+Raw data will be automatically extracted from the custom analytics Log table by Sentinel Workbook. 
+
+So far in the Azure dashboard overview:
+![honeypot_group](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/d6aee0d8-839c-4348-88f6-98788c669001)
+
+<h3>Creating the map query</h3>:
+
+![map_query](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/733b87ea-9096-41d3-8b01-0fe6eb4ff3d7)
+
+![map_query_settings](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/a7e655f2-1959-4866-8693-803028ea634f)
+
+![maP-plotting](https://github.com/brireyn/brireyn/assets/96150916/dc804bef-11b0-40cd-9a2a-0e0d91e57483)
+
+<h3>This is the live map after 1 hour running the VM.</h3>
+
+![RDP_Map](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/52034414-19b7-449b-9162-fc0fc746ab95)
+
+<h3>End Results after 5 hours</h3>
+I began to notice the first attack from someone in England, UK after about 2 hrs. 
+
+![1hour_map_view](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/125e14ac-2ce5-48a5-a574-7acda47f72f1)
+I received mainly default guesses since the VM was named honeypot_VM. 
+
+![england_close](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/84002063-f1ef-4ddd-a808-a251ff73e664)
+
+
+![failed_event_log_8 21](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/b7b905b7-fbdf-4d53-9370-02fee6c0b0be)
+
+
+![failed_event_log_8 21-1](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/e9bf6ffd-82cb-4943-a460-b515247cf79e)
+
+
+The RDP Heatmap after about 5 hours: 
+
+![4hrs_attack_log](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/3cc099f7-3eff-4948-90ff-c28c67e20041)
+
+This person from Saudi, Arabia came close to guessing the VM's username. But no one succeeded to log into the VM. 
+
+![close_username_guessing](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/0698ca1c-d200-4b37-8a37-4024d6920440)
+Sentinel Data:
+![sentinel_data](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/e9135bda-afb6-4400-bf08-c8fa188fa424)
+
+Security Events Insights:
+
+![sec_events_insights](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/d6146d5b-136c-4ad4-ba6d-c214d80c046b)
+
+![Screenshot 2023-08-21 222404](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/9488dfb5-4b8e-4505-b8f0-4b7dcac13f85)
+![Screenshot 2023-08-21 222344](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/1d4e288a-3424-42cc-aa3e-1b30de3ee606)
+
+Thank you for taking the time to preview this lab! The end results were interesting in seeing the attackers appeared to search for VM's that were running for more than an hour and NSG's rules fully opened. 
 
 <p align="center">
+
+</p>
+
