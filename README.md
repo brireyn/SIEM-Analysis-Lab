@@ -4,7 +4,7 @@ SIEM Analysis lab made in Microsoft Azure environment utilizing log aggregation 
 <h1>SIEM Analysis Lab in Azure</h1>
 
 <h2>Description</h2>
-<p>This cybersecurity lab project consists of using Microsoft Sentinel's SIEM service,Security Center, Azure Virtual Machine as the the honeypot with an open Network Security group to allow inbound access to entice attackers' activity.The PowerShell script collects the VM's Windows Event Viewer- Event Log Error code (4625) alerts that are failed login attempts. The script then automates the logs to be parsed by a third party API (ipgeolocation.io) to provide geolocation of the IP address from the failed login attempts; (longitutde and latitude coordinates). The API's data is then ingested into a custom table in Azure Log Analytics which ingests and parses the failed RDP log in attempts and plots to a Workbook in Microsoft Sentinel as a real-time live map with coordinates of the attacker's IP address, username, country and state. The logs are filtered based on labels for analytical data and alerts based on the error code of a failed log in attempt to the VM.   /p>
+<p>This cybersecurity lab project consists of using Microsoft Sentinel's SIEM service,Security Center, Azure Virtual Machine as the the honeypot with an open Network Security group to allow inbound access to entice attackers' activity.The PowerShell script collects the VM's Windows Event Viewer- Event Log Error code (4625) alerts that are failed login attempts. The PowerShell script automates the logs to be parsed by a third party API (ipgeolocation.io) to provide geolocation of the IP address from the failed login attempts; (longitutde and latitude coordinates). The API's data is then ingested into a custom table in Azure Log Analytics which ingests and parses the failed RDP log in attempts and plots to a Workbook in Microsoft Sentinel as a real-time live map with coordinates of the attacker's IP address, username, country and state. The logs are filtered based on labels for analytical data and alerts based on the error code of a failed log in attempt to the VM.   /p>
 
   ![diagram_SIEM_lab](https://github.com/brireyn/brireyn/assets/96150916/a15c2ef9-98ac-4dde-94bf-02713dfe2d6b)
 
@@ -87,15 +87,67 @@ Turn off Windows Defender Firewall setting inside of the VM, this allows ping IC
 
 ![Turn_off_MSDefender](https://github.com/brireyn/brireyn/assets/96150916/fa732a07-2718-4bba-8bd9-e804067198e2)
 
+*Get API key from here: https://ipgeolocation.io/ ( this is used inside of the PowerShell script) 
 
 <h3>Step 10</h3>
+I created some network traffic by using the CMD on my own computer by pinging the VM's public IP address. 
 
+![stopped_ping](https://github.com/brireyn/brireyn/assets/96150916/db66f3b2-2233-4732-8a44-053f9c636ea8)
+
+(Before disabling the firewall inside of the VM, pinging will fail as the host is not yet reachable to inbound network traffic.)
+![before_turningoff_firewall](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/7ee6e84b-8d82-45f9-8279-73477e94bca7)
 
 <h3>Step 11</h3>
+(Inside the VM) The Event Viewer inside the VM shows audit activity under security logs. 
+
+![sec_logs_audits](https://github.com/brireyn/brireyn/assets/96150916/4f02263c-45c5-4a83-9103-54b3cd84bf31)
+
+Insert the PowerShell script inside of PowerShell ISE in the VM and make sure to use a custom API key from the ipgeolocation.io API (third party website) that parses the IP address from the login log data and gives the geolocation of the user back to the PowerShell script. The logs will be ingested into Log Analytics Workspaces and then will use the Microsoft SIEM to read the latitude and longitude of the geolocation information.
+
+![replace_with_own_API_key](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/10fb730c-305b-462e-acbb-ca1a0bbfff57)
+
+![powershell_download_script](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/087af881-f0d9-4fb8-910d-37698550ba4e)
+![image](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/2de321cb-a059-4c50-a384-ac2f1bf5ff59)
+
+
+<h3>Step 12</h3>
+What is happening with how the powershell script works -
+
+The script finds any failed login attempts ending in the Event Log Error code 4625 and will propagate the logs in the pink output below in powershell ISE, the script is sent to the API ipgeolocation.io and gets the data returns the ip coordinates geolocation. 
+-Will use the programdata (hidden file) to train Log Analytics in Azure to parse out the log data.
+
+![logger_run](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/aeaeec67-1246-4738-8ae4-30fdd55d2cea)
+
+Add a text file of rdp_failed.logs to the Program data file which is hidden. 
+
+![program_data](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/cc7763ee-6ea5-49dd-b52e-5d0229d3e33d)
+
+An example of me failing a login attempt at the bottom of the running the PowerShell Script:
+
+![ex of me failing login](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/7c6f3627-cdb5-4968-a146-be2775f61ab7)
+![failed_login_attempt_8_21](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/22e71294-cf4d-4c6e-9d25-6829ef676a22)
 
 
 
+<h3>Step 13</h3>
 
+Go into Azure Log Analytics Workspaces.
+
+Create the log analytics group:
+
+![create_log_analytics_group](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/dd22d85b-8cf9-43f4-9a38-8f8ecb4fc762)
+
+create a custom log table to direct the path to the Program Data folder inside of the VM where the failed_rdp.log text file is stored along with the PowerShell script that is running.
+![create_custom_log_azure](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/f7b60679-2582-4306-b98a-5ec470624fe7)
+
+![create_custom_log_2](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/dda67646-6bfd-40bf-b026-6feaa49ec60e)
+
+![create_customlog_3](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/1734d263-aee1-486b-8335-ce89581d169e)
+
+<h3>Step 14</h3>
+
+
+<h3>Step 15</h3>
 
 
 
