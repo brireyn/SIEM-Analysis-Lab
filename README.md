@@ -8,6 +8,7 @@ SIEM Analysis lab created in Microsoft Azure environment utilizing log aggregati
 This cybersecurity lab project consists of using Microsoft Sentinel's SIEM service, Security Center, Azure Virtual Machine as the the honeypot with an open Network Security group to allow inbound access to entice attackers' activity.The PowerShell script collects the VM's Windows Event Viewer- Event Log Error code (4625) alerts that are failed login attempts. The PowerShell script automates the logs to be parsed by a third party API (ipgeolocation.io) to provide geolocation of the IP address from the failed login attempts; (longitutde and latitude coordinates). The API's data is then ingested into a custom table in Azure Log Analytics which ingests and parses the failed RDP log in attempts and plots to a custom Workbook in Microsoft Sentinel as a real-time live map with coordinates of the attacker's IP address, username, attempted login info (username and password), country and state. The logs are filtered based on labels for analytical data and alerts based on the error code of a failed log in attempt to the VM.   
 
 <h2> SIEM Analysis Diagram </h2>
+
 ![Azure Diagram drawio](https://github.com/brireyn/SIEM-Analysis-Lab/assets/96150916/e937ddc3-57e9-4665-a509-7830e6f81c3f)
 
 <h2>Languages and Utilities Used</h2>
